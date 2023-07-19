@@ -4,8 +4,6 @@ substitutions:
   
 esphome:
   name: ${device_name}
-  platform: ESP8266
-  board: nodemcuv2
   project:
     name: breaveheard.gasmeter
     version: "1.0"
