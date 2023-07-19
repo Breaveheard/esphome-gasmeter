@@ -1,0 +1,106 @@
+---
+substitutions:
+  device_name: gasmeter
+  
+esphome:
+  name: ${device_name}
+  platform: ESP8266
+  board: nodemcuv2
+  project:
+    name: breaveheard.gasmeter
+    version: "1.0"
+
+esp8266:
+  board: nodemcuv2
+  restore_from_flash: true
+
+wifi:
+  ap:
+    ssid: ${device_name}
+ 
+captive_portal:
+
+# Enable logging
+logger:
+ 
+# Enable Home Assistant API
+api:
+ 
+ota:
+
+dashboard_import:
+  package_import_url: github://Breaveheard/esphome-gasmeter/gasmeter.yaml@main
+
+
+globals:
+  - id: total_pulses
+    type: int
+    restore_value: true
+    initial_value: '0'  # startet mit 0
+  - id: imp_ratio
+    type: float
+    restore_value: false
+    initial_value: '0.01'  # vom Gaszaehler
+  - id: Zustandszahl
+    type: float
+    restore_value: false
+    initial_value: '0.9645'  # aus der Gasrechnung
+  - id: Brennwert
+    type: float
+    restore_value: false
+    initial_value: '10.362'  # aus der Gasrechnung  
+  - id: initial_consumption
+    type: float
+    restore_value: false
+    initial_value: '61578063'  # hier kann der Gaszählerstand initialisiert werden (Faktor 1000 um einen genaueren Wert zu erzeugen)
+  - id: initial_energy_consumption
+    type: float
+    restore_value: false
+    initial_value: id(initial_consumption) * id(Brennwert) * id(Zustandszahl) / 1000.0
+    
+
+binary_sensor:
+  - platform: gpio
+    id: internal_pulse_counter
+    pin:
+      number: D2
+      mode: INPUT_PULLUP
+    name: "Live-Impuls"
+    filters:
+      - delayed_on: 100ms
+    on_press:
+      then:
+        - lambda: id(total_pulses) += 1;      
+
+sensor:
+  - platform: template
+    name: "Gasverbrauch"
+    device_class: gas
+    update_interval : 10s    
+    unit_of_measurement: "m³"
+    state_class: total_increasing
+    icon: "mdi:fire"
+    accuracy_decimals: 2
+    lambda: return (id(initial_consumption)/1000.0) + (id(total_pulses) * id(imp_ratio));
+
+  - platform: template
+    name: 'Gasverbrauch Energy'
+    device_class: energy
+    state_class: total_increasing
+    update_interval : 10s    
+    icon: 'mdi:fire'
+    accuracy_decimals: 1
+    unit_of_measurement: "kWh"
+    lambda: return id(initial_energy_consumption) + (id(total_pulses) * id(imp_ratio) * id(Brennwert) * id(Zustandszahl));
+    
+  - platform: template
+    name: 'Pulse Counter total'
+    update_interval : 10s    
+    icon: "mdi:counter"
+    accuracy_decimals: 0
+    unit_of_measurement: "pulses"
+    lambda: return id(total_pulses);
+
+  - platform: wifi_signal
+    name: "Gaszähler WiFi Signal"
+    update_interval: 60s 
