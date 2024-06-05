@@ -84,12 +84,6 @@ binary_sensor:
     name: "Status Gas-Meter"
 
 sensor:
-  - platform: uptime
-    name: Gas-Meter Uptime
-  - platform: wifi_signal
-    name: Gas-Meter WiFi Signal
-    update_interval: 60s
-
   - platform: template
     name: "Gasverbrauch"
     device_class: gas
