@@ -80,7 +80,7 @@ binary_sensor:
       then:
         - lambda: id(total_pulses) += 1;      
 
- - platform: status
+  - platform: status
     name: "Status Gas-Meter"
 
 sensor:
