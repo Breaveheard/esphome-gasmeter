@@ -50,7 +50,7 @@ globals:
   - id: imp_ratio
     type: float
     restore_value: false
-    initial_value: '0.01'  # vom Gaszaehler
+    initial_value: '0.1'  # vom Gaszaehler
   - id: Zustandszahl
     type: float
     restore_value: false
