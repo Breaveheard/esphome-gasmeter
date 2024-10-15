@@ -62,7 +62,7 @@ globals:
   - id: initial_consumption
     type: float
     restore_value: false
-    initial_value: '64159220'  # hier kann der Gaszählerstand initialisiert werden (Faktor 1000 um einen genaueren Wert zu erzeugen)
+    initial_value: '0'  # hier kann der Gaszählerstand initialisiert werden (Faktor 1000 um einen genaueren Wert zu erzeugen)
   - id: initial_energy_consumption
     type: float
     restore_value: false
