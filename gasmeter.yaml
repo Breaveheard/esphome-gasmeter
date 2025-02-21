@@ -7,7 +7,6 @@ esp8266:
 
 esphome:
   name: ${device_name}
-  esp8266_restore_from_flash : true
   project:
     name: breaveheard.gasmeter
     version: "2.4"
@@ -48,27 +47,33 @@ globals:
     type: int
     restore_value: true
     initial_value: '0'  # startet mit 0
+    restore_value: true
   - id: imp_ratio
     type: float
     restore_value: false
     initial_value: '0.1'  # vom Gaszaehler
+    restore_value: true
   - id: Zustandszahl
     type: float
     restore_value: false
     initial_value: '0.9645'  # aus der Gasrechnung
+    restore_value: true
   - id: Brennwert
     type: float
     restore_value: false
-    initial_value: '10.362'  # aus der Gasrechnung  
+    initial_value: '10.362'  # aus der Gasrechnung
+    restore_value: true  
   - id: initial_consumption
     type: float
     restore_value: false
     initial_value: '0'  # hier kann der Gaszählerstand initialisiert werden (Faktor 1000 um einen genaueren Wert zu erzeugen)
+    restore_value: true
   - id: initial_energy_consumption
     type: float
     restore_value: false
     initial_value: id(initial_consumption) * id(Brennwert) * id(Zustandszahl) / 1000.0
-    
+    restore_value: true
+
 binary_sensor:
   - platform: gpio
     id: internal_pulse_counter
