@@ -4,6 +4,8 @@ substitutions:
 
 esp8266:
   board: d1_mini_pro
+  framework:
+    version: recommended
 
 esphome:
   name: ${device_name}
@@ -14,6 +16,7 @@ esphome:
 wifi:
   ap:
     ssid: "Gas-Meter Fallback Hotspot"
+    password: "12345678"  # Required in newer versions for security
 
 captive_portal:
 
@@ -33,44 +36,41 @@ debug:
 
 text_sensor:
   - platform: version
-    name: Gas-Meter ESPHome Version
+    name: "Gas-Meter ESPHome Version"
+    entity_category: diagnostic
   - platform: wifi_info
     ip_address:
-      name: Gas-Meter IP
+      name: "Gas-Meter IP"
+      entity_category: diagnostic
     ssid:
-      name: Gas-Meter SSID
+      name: "Gas-Meter SSID"
+      entity_category: diagnostic
     bssid:
-      name: Gas-Meter BSSID
-
+      name: "Gas-Meter BSSID"
+      entity_category: diagnostic
 globals:
   - id: total_pulses
     type: int
-    restore_value: true
     initial_value: '0'  # startet mit 0
     restore_value: true
   - id: imp_ratio
     type: float
-    restore_value: false
     initial_value: '0.1'  # vom Gaszaehler
     restore_value: true
   - id: Zustandszahl
     type: float
-    restore_value: false
     initial_value: '0.9645'  # aus der Gasrechnung
     restore_value: true
   - id: Brennwert
     type: float
-    restore_value: false
     initial_value: '10.362'  # aus der Gasrechnung
     restore_value: true  
   - id: initial_consumption
     type: float
-    restore_value: false
     initial_value: '0'  # hier kann der Gaszählerstand initialisiert werden (Faktor 1000 um einen genaueren Wert zu erzeugen)
     restore_value: true
   - id: initial_energy_consumption
     type: float
-    restore_value: false
     initial_value: id(initial_consumption) * id(Brennwert) * id(Zustandszahl) / 1000.0
     restore_value: true
 
@@ -78,7 +78,7 @@ binary_sensor:
   - platform: gpio
     id: internal_pulse_counter
     pin:
-      number: D4
+      number: GPIO2  # D4 is GPIO2 on ESP8266, using GPIO number is preferred
       mode: INPUT_PULLUP
     name: "Live-Impuls"
     filters:
@@ -89,6 +89,7 @@ binary_sensor:
 
   - platform: status
     name: "Status Gas-Meter"
+    entity_category: diagnostic
 
 sensor:
   - platform: template
